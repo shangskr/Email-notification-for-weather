@@ -9,6 +9,9 @@ def get_weather(api_key, city):
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
     response = requests.get(url)
     data = response.json()
+
+    if response.status_code != 200:
+        raise Exception(f"Error fetching weather data: {data.get('message', 'Unknown error')}")
     return data
 
 def send_email(weather_data, sender_email, receiver_email, password):
@@ -17,20 +20,23 @@ def send_email(weather_data, sender_email, receiver_email, password):
     message["To"] = receiver_email
     message["Subject"] = "Daily Weather Forecast"
 
-    weather_description = weather_data["weather"][0]["description"]
-    temperature = weather_data["main"]["temp"]
-    humidity = weather_data["main"]["humidity"]
-    wind_speed = weather_data["wind"]["speed"]
-    wind_direction = weather_data["wind"]["deg"]
-    sunrise_timestamp = weather_data["sys"]["sunrise"]
-    sunset_timestamp = weather_data["sys"]["sunset"]
-    sunrise_time = datetime.utcfromtimestamp(sunrise_timestamp).strftime("%Y-%m-%d %H:%M:%S")
-    sunset_time = datetime.utcfromtimestamp(sunset_timestamp).strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        weather_description = weather_data["weather"][0]["description"]
+        temperature = weather_data["main"]["temp"]
+        humidity = weather_data["main"]["humidity"]
+        wind_speed = weather_data["wind"]["speed"]
+        wind_direction = weather_data["wind"]["deg"]
+        sunrise_timestamp = weather_data["sys"]["sunrise"]
+        sunset_timestamp = weather_data["sys"]["sunset"]
+        sunrise_time = datetime.utcfromtimestamp(sunrise_timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        sunset_time = datetime.utcfromtimestamp(sunset_timestamp).strftime("%Y-%m-%d %H:%M:%S")
+    except KeyError as e:
+        raise Exception(f"Missing expected weather data in response: {e}")
 
     body = f"""
     Hello!
 
-    This is the daily weather forecast for Xingtai:
+    This is the daily weather forecast for {weather_data.get('name', 'your city')}:
 
     Weather: {weather_description}
     Temperature: {temperature}°C
@@ -64,5 +70,8 @@ if __name__ == "__main__":
     receiver_email = os.getenv("RECEIVER_EMAIL")
     email_password = os.getenv("EMAIL_PASSWORD")
 
-    weather_data = get_weather(api_key, city)
-    send_email(weather_data, sender_email, receiver_email, email_password)
+    try:
+        weather_data = get_weather(api_key, city)
+        send_email(weather_data, sender_email, receiver_email, email_password)
+    except Exception as e:
+        print(f"Error: {e}")
