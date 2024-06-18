@@ -3,6 +3,7 @@ name: Daily Weather Notification
 on:
   schedule:
     - cron: "0 7 * * *"  # 每天早上7点执行
+  workflow_dispatch:
 
 jobs:
   send_weather_email:
