@@ -2,7 +2,7 @@ name: Daily Weather Notification
 
 on:
   schedule:
-    - cron: "0 7 * * *"  # 每天早上7点执行
+    - cron: "0 23 * * *"  # 每天晚上11点（UTC时间）执行，即北京时间第二天凌晨7点执行
   workflow_dispatch:
 
 jobs:
