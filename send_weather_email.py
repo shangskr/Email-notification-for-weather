@@ -11,7 +11,13 @@ def get_weather(api_key, city):
     data = response.json()
 
     if response.status_code != 200:
-        raise Exception(f"Error fetching weather data: {data.get('message', 'Unknown error')}")
+        if 'message' in data:
+            raise Exception(f"Error fetching weather data: {data['message']}")
+        else:
+            raise Exception("Unknown error fetching weather data")
+    elif data.get("cod") == "404":
+        raise Exception(f"City '{city}' not found")
+
     return data
 
 def send_email(weather_data, sender_email, receiver_email, password):
