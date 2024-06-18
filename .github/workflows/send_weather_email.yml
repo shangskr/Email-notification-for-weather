@@ -1,0 +1,31 @@
+name: Daily Weather Notification
+
+on:
+  schedule:
+    - cron: "0 7 * * *"  # 每天早上7点执行
+
+jobs:
+  send_weather_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Run script to send weather email
+        env:
+          API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          CITY: "your_city_name"
+          SENDER_EMAIL: "your_email@example.com"
+          RECEIVER_EMAIL: "recipient_email@example.com"
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: python send_weather_email.py
