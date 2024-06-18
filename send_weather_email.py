@@ -1,5 +1,4 @@
-# send_weather_email.py
-
+import os
 import requests
 import smtplib
 from email.mime.text import MIMEText
@@ -12,11 +11,7 @@ def get_weather(api_key, city):
     data = response.json()
     return data
 
-def send_email(weather_data):
-    sender_email = "your_email@example.com"  # 发件人邮箱
-    receiver_email = "recipient_email@example.com"  # 收件人邮箱
-    password = "your_email_password"  # 发件人邮箱密码或授权码
-
+def send_email(weather_data, sender_email, receiver_email, password):
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
@@ -63,7 +58,11 @@ def send_email(weather_data):
         server.quit()
 
 if __name__ == "__main__":
-    api_key = "2a3c49fab5cfe490bb5bb9df0b4d3877"
-    city = "Xingtai"
+    api_key = os.getenv("API_KEY")
+    city = os.getenv("CITY")
+    sender_email = os.getenv("SENDER_EMAIL")
+    receiver_email = os.getenv("RECEIVER_EMAIL")
+    email_password = os.getenv("EMAIL_PASSWORD")
+
     weather_data = get_weather(api_key, city)
-    send_email(weather_data)
+    send_email(weather_data, sender_email, receiver_email, email_password)
