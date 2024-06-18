@@ -4,7 +4,7 @@
 
 ## 如何使用
 
-1. 克隆该仓库到本地：
+1. 克隆该仓库：
 2. 创建一个OpenWeatherMap的API密钥，详细信息请访问 [OpenWeatherMap](https://openweathermap.org/)。
 3. 将你的OpenWeatherMap API密钥添加到GitHub Secrets中。在你的GitHub仓库中，转到Settings > Secrets，然后添加一个名为`OPENWEATHERMAP_API_KEY`的新密钥，将你的API密钥作为值。
 4. 你需要配置的环境变量（`API_KEY`和`OPENWEATHERMAP_API_KEY`配置一样，`EMAIL_PASSWORD`要使用SMTP服务的应用码而不是邮箱密码）：
