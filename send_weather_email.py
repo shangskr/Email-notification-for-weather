@@ -40,14 +40,14 @@ try:
     if not sender_email or not receiver_email or not password:
         raise ValueError('SENDER_EMAIL, RECEIVER_EMAIL, or EMAIL_PASSWORD environment variables are not defined.')
 
-    # Sending email
+    # Sending email using Outlook SMTP server
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'html'))
 
-    with smtplib.SMTP('smtp.example.com', 587) as server:  # Update with your SMTP server details
+    with smtplib.SMTP('smtp.office365.com', 587) as server:
         server.starttls()
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, msg.as_string())
