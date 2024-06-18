@@ -1,13 +1,22 @@
+import os
 import requests
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+# Get environment variables
+CITY = os.getenv('CITY')
+API_KEY = os.getenv('API_KEY')
+
+# Check if CITY and API_KEY are defined
+if not CITY or not API_KEY:
+    raise ValueError('CITY or API_KEY environment variables are not defined.')
+
 # OpenWeatherMap API endpoint
 url = f"http://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric"
 
-# Fetching weather data from OpenWeatherMap
 try:
+    # Fetching weather data from OpenWeatherMap
     response = requests.get(url)
     data = response.json()
 
@@ -24,9 +33,12 @@ try:
            f"Humidity: {humidity}%"
 
     # Email configuration
-    sender_email = SENDER_EMAIL
-    receiver_email = RECEIVER_EMAIL
-    password = EMAIL_PASSWORD
+    sender_email = os.getenv('SENDER_EMAIL')
+    receiver_email = os.getenv('RECEIVER_EMAIL')
+    password = os.getenv('EMAIL_PASSWORD')
+
+    if not sender_email or not receiver_email or not password:
+        raise ValueError('SENDER_EMAIL, RECEIVER_EMAIL, or EMAIL_PASSWORD environment variables are not defined.')
 
     # Sending email
     msg = MIMEMultipart()
