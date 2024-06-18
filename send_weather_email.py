@@ -52,9 +52,12 @@ def send_email(weather_data, sender_email, receiver_email, password):
     message.attach(MIMEText(body, "plain"))
 
     try:
+        print(f"Connecting to SMTP server...")
         server = smtplib.SMTP("smtp.office365.com", 587)  # SMTP服务器地址和端口
         server.starttls()
+        print(f"Logging in as {sender_email}...")
         server.login(sender_email, password)
+        print(f"Sending email to {receiver_email}...")
         text = message.as_string()
         server.sendmail(sender_email, receiver_email, text)
         print("Email sent successfully!")
@@ -71,7 +74,9 @@ if __name__ == "__main__":
     email_password = os.getenv("EMAIL_PASSWORD")
 
     try:
+        print(f"Fetching weather data for {city}...")
         weather_data = get_weather(api_key, city)
+        print("Weather data fetched successfully!")
         send_email(weather_data, sender_email, receiver_email, email_password)
     except Exception as e:
         print(f"Error: {e}")
